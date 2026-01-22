@@ -57,7 +57,7 @@ src/main/java/com/sqld/practice/
 
 프로젝트의 일관성을 위해 아래 규칙들을 준수합니다.
 
-* **Git Commit:** [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) 가이드를 따릅니다.
+* **Git Commit:** [Conventional Commits](https://www.conventionalcommits.org/ko/v1.0.0/) 가이드를 따릅니다.
 * **Code Style:** [Google Java Style Guide](https://google.github.io/styleguide/javaguide.html)를 기반으로 작성합니다.
 * **Branch Strategy:** [Git Flow](https://nvie.com/posts/a-successful-git-branching-model/) 전략을 단순화하여 사용합니다. (Main - Develop - Feature)
 
@@ -68,4 +68,4 @@ src/main/java/com/sqld/practice/
 ## 8. 연락처 및 피드백
 
 * **Email:** ypungkyu0317@gmail.com
-* **Issues:** [GitHub Issues](https://www.google.com/search?q=https://github.com/%EC%9C%A0%EC%A0%80ID/sqld-practice/issues)를 통해 버그나 개선 사항을 남겨주세요.
+* **Issues:** [GitHub Issues](https://github.com/toctoce/sqld-practice/issues)를 통해 버그나 개선 사항을 남겨주세요.
