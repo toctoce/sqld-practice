@@ -31,15 +31,58 @@ SQLD(SQL 개발자) 자격증 취득을 준비하는 사용자를 위해 문제 
 
 ## 4. 데이터베이스 설계
 
-* **ERD:** (추후 이미지 업로드 예정)
+### **1. User (회원)**
 
-| 테이블명 | 설명 | 주요 컬럼 |
+| 컬럼명 | 타입 | 제약 사항                  |
+| --- | --- |------------------------|
+| **id** | Long | **PK**                 |
+| **email** | String | Unique, Nullable(False) |
+| **password** | String | Nullable(True)         |
+| **provider** | String | Nullable(True)         |
+| **provider_id** | String | Nullable(True)         |
+| **nickname** | String |                        |
+| **role** | Enum | USER, ADMIN            |
+
+### **2. Problem (문제)**
+
+| 컬럼명 | 타입 | 제약 사항 |
 | --- | --- | --- |
-| **users** | 회원 정보 | `id`, `email`, `password`, `nickname`, `role` |
-| **problems** | SQLD 문제 데이터 | `id`, `category`, `content`, `sql_code`, `answer`, `explanation` |
-| **exams** | 사용자의 시험 응시 기록 | `id`, `user_id`, `score`, `taken_at`, `duration` |
-| **exam_details** | 시험별 개별 문항 응시 결과 | `id`, `exam_id`, `problem_id`, `user_answer`, `is_correct` |
-| **bookmarks** | **오답 및 관심 문제 통합 관리** | `id`, `user_id`, `problem_id`, `is_auto_added(오답여부)`, `created_at` |
+| **id** | Long | **PK** |
+| **category** | Integer | 1과목, 2과목 |
+| **content** | Text |  |
+| **choice1~4** | String |  |
+| **answer** | Integer |  |
+| **explanation** | Text |  |
+
+### **3. Exam (시험 기록)**
+
+| 컬럼명             | 타입 | 제약 사항 |
+|-----------------| --- | --- |
+| **id**          | Long | **PK** |
+| **user_id**     | Long | **FK** (User) |
+| **total_score** | Integer |  |
+| **start_time**  | LocalDateTime |  |
+| **end_time**    | LocalDateTime |  |
+| **status**      | Enum | IN_PROGRESS, COMPLETED |
+
+### **4. ExamDetail (시험 문항 상세)**
+
+| 컬럼명               | 타입 | 제약 사항 |
+|-------------------| --- | --- |
+| **id**            | Long | **PK** |
+| **exam_id**       | Long | **FK** (Exam) |
+| **problem_id**    | Long | **FK** (Problem) |
+| **user_answer**   | Integer |  |
+| **actual_answer** | Integer |  |
+| **is_correct**    | Boolean |  |
+
+### **5. Bookmark (오답 및 북마크)**
+
+| 컬럼명 | 타입 | 제약 사항 |
+| --- | --- | --- |
+| **id** | Long | **PK** |
+| **user_id** | Long | **FK** (User) |
+| **problem_id** | Long | **FK** (Problem) |
 
 ## 5. 프로젝트 구조
 
