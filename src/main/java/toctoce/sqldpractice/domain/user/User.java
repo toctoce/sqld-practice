@@ -12,6 +12,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import toctoce.sqldpractice.domain.user.dto.UserSignupRequest;
 import toctoce.sqldpractice.global.common.BaseTimeEntity;
 
 @Entity
@@ -27,10 +28,13 @@ public class User extends BaseTimeEntity {
 
     @Column(nullable = false, unique = true)
     private String email;
+    @Column(nullable = false)
     private String password;
+    @Column(nullable = false)
     private String nickname;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private UserRole role;
 
     private String provider;
@@ -44,5 +48,14 @@ public class User extends BaseTimeEntity {
         this.role = role;
         this.provider = provider;
         this.providerId = providerId;
+    }
+
+    public static User of(UserSignupRequest request, String encodedPassword) {
+        return User.builder()
+                .email(request.getEmail())
+                .password(encodedPassword)
+                .nickname(request.getNickname())
+                .role(UserRole.USER)
+                .build();
     }
 }
