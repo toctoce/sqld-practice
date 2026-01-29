@@ -21,6 +21,7 @@ public class GlobalExceptionHandler {
         response.setStatus(errorCode.getStatus().value());
         model.addAttribute("errorMessage", errorCode.getMessage());
 
+        log.warn("Error Message: {}", errorCode.getMessage());
         log.error(errorCode.getMessage());
         return "error";
     }
@@ -31,7 +32,7 @@ public class GlobalExceptionHandler {
         ErrorCode errorCode = e.getErrorCode();
         model.addAttribute("errorMessage", errorCode.getMessage());
 
-        log.error(errorCode.getMessage());
+        log.warn("Duplicate email attempt: {}", errorCode.getMessage());
         return "signup";
     }
 
@@ -41,7 +42,7 @@ public class GlobalExceptionHandler {
         ErrorCode errorCode = e.getErrorCode();
         model.addAttribute("errorMessage", errorCode.getMessage());
 
-        log.error(errorCode.getMessage());
+        log.warn("Invalid input: {}", errorCode.getMessage());
         return "signup";
     }
 

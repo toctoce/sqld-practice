@@ -53,6 +53,7 @@ class UserSignupRequestTest {
 
     @ParameterizedTest
     @NullAndEmptySource
+    @ValueSource(strings = {"   ", "\t", "\n"})
     @DisplayName("닉네임이 비어있거나 공백이면 예외를 던진다.")
     void invalid_nickname(String nickname) {
         assertThatThrownBy(() -> new UserSignupRequest("test@test.com", "Password123!", nickname))
