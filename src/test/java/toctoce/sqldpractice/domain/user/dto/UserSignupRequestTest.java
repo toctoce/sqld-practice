@@ -21,6 +21,7 @@ class UserSignupRequestTest {
     }
 
     @ParameterizedTest
+    @NullAndEmptySource
     @ValueSource(strings = {
             "abc",
             "test@",
@@ -34,8 +35,7 @@ class UserSignupRequestTest {
             "test@test@google.com",
             "test@google",
             "test@google..com",
-            "test@.",
-            ""
+            "test@."
     })
     @DisplayName("잘못된 이메일 형식은 InvalidInputException을 던진다.")
     void invalid_email(String email) {
@@ -44,6 +44,7 @@ class UserSignupRequestTest {
     }
 
     @ParameterizedTest
+    @NullAndEmptySource
     @ValueSource(strings = {"short1!", "nonumber!", "noemoticon123", "12345!!!!!"})
     @DisplayName("비밀번호 정책(8자 이상, 영문+숫자+특수문자) 위반 시 예외를 던진다.")
     void invalid_password(String password) {

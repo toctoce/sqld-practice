@@ -22,7 +22,6 @@ public class GlobalExceptionHandler {
         model.addAttribute("errorMessage", errorCode.getMessage());
 
         log.warn("Error Message: {}", errorCode.getMessage());
-        log.error(errorCode.getMessage());
         return "error";
     }
 
