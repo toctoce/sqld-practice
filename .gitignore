@@ -43,3 +43,4 @@ desktop.ini
 
 ### Sensitive Data ###
 .env
+*.db
