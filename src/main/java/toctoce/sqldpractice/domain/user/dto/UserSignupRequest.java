@@ -2,8 +2,8 @@ package toctoce.sqldpractice.domain.user.dto;
 
 import java.util.regex.Pattern;
 import lombok.Getter;
-import toctoce.sqldpractice.global.exception.BusinessException;
 import toctoce.sqldpractice.global.exception.ErrorCode;
+import toctoce.sqldpractice.global.exception.common.InvalidInputException;
 
 @Getter
 //todo : Jackson을 위한 기본 생성자. 필요할 때 넣기.
@@ -29,25 +29,25 @@ public class UserSignupRequest {
 
     private void validate(String email, String password, String nickname) {
         validateEmail(email);
-        validatePassword(password);
         validateNickname(nickname);
+        validatePassword(password);
     }
 
     private void validateEmail(String email) {
         if (email == null || !EMAIL_PATTERN.matcher(email).matches()) {
-            throw new BusinessException(ErrorCode.INVALID_EMAIL);
+            throw new InvalidInputException(ErrorCode.INVALID_EMAIL);
         }
     }
 
     private void validatePassword(String password) {
         if (password == null || !PASSWORD_PATTERN.matcher(password).matches()) {
-            throw new BusinessException(ErrorCode.INVALID_PASSWORD);
+            throw new InvalidInputException(ErrorCode.INVALID_PASSWORD);
         }
     }
 
     private void validateNickname(String nickname) {
         if (nickname == null || nickname.trim().isEmpty()) {
-            throw new BusinessException(ErrorCode.INVALID_NICKNAME);
+            throw new InvalidInputException(ErrorCode.INVALID_NICKNAME);
         }
     }
 }
