@@ -3,6 +3,7 @@ package toctoce.sqldpractice.domain.user;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,6 +15,11 @@ class UserRepositoryTest {
 
     @Autowired
     private UserRepository userRepository;
+
+    @BeforeEach
+    void setUp() {
+        userRepository.deleteAll();
+    }
 
     @Test
     void 유저_삭제_테스트() {
@@ -27,7 +33,6 @@ class UserRepositoryTest {
     @Test
     void 이메일로_유저_조회가_가능하다() {
         User user = createTestUser();
-
         userRepository.save(user);
 
         // When
@@ -43,6 +48,7 @@ class UserRepositoryTest {
         User user = User.builder()
                 .email("test@gmail.com")
                 .nickname("test-user")
+                .password("abc123!!!")
                 .role(UserRole.USER)
                 .build();
         return user;
