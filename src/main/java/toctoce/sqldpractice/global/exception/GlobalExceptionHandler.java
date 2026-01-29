@@ -1,5 +1,6 @@
 package toctoce.sqldpractice.global.exception;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
@@ -14,8 +15,10 @@ import toctoce.sqldpractice.global.exception.user.DuplicateEmailException;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(BusinessException.class)
-    public String handleBusinessException(BusinessException e, Model model) {
+    public String handleBusinessException(BusinessException e, Model model, HttpServletResponse response) {
         ErrorCode errorCode = e.getErrorCode();
+
+        response.setStatus(errorCode.getStatus().value());
         model.addAttribute("errorMessage", errorCode.getMessage());
 
         log.error(errorCode.getMessage());
