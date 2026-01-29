@@ -7,8 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import toctoce.sqldpractice.domain.user.User;
 import toctoce.sqldpractice.domain.user.UserRepository;
 import toctoce.sqldpractice.domain.user.dto.UserSignupRequest;
-import toctoce.sqldpractice.global.exception.BusinessException;
-import toctoce.sqldpractice.global.exception.ErrorCode;
+import toctoce.sqldpractice.global.exception.user.DuplicateEmailException;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +28,7 @@ public class UserService {
     private void validateDuplicateEmail(String email) {
         userRepository.findByEmail(email)
                 .ifPresent(user -> {
-                    throw new BusinessException(ErrorCode.DUPLICATE_EMAIL);
+                    throw new DuplicateEmailException();
                 });
     }
 }
