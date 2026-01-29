@@ -10,7 +10,8 @@ import toctoce.sqldpractice.global.exception.common.InvalidInputException;
 //@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserSignupRequest {
 
-    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@(.+)$");
+    private static final Pattern EMAIL_PATTERN =
+            Pattern.compile("^[A-Za-z0-9+_-]+(\\.[A-Za-z0-9+_-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*\\.[A-Za-z]{2,}$");
 
     // 영문, 숫자, 특수문자 포함 8자 이상
     private static final Pattern PASSWORD_PATTERN =
