@@ -26,13 +26,9 @@ public class GlobalExceptionHandler {
     public String handleDuplicateEmailException(DuplicateEmailException e, Model model) {
         ErrorCode errorCode = e.getErrorCode();
         model.addAttribute("errorMessage", errorCode.getMessage());
+
         log.error(errorCode.getMessage());
         return "signup";
     }
 
-    @ExceptionHandler(Exception.class)
-    public String handleException(Exception e, Model model) {
-        model.addAttribute("errorMessage", "시스템에 문제가 발생했습니다.");
-        return "error";
-    }
 }
