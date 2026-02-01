@@ -50,6 +50,7 @@ class UserRepositoryTest {
                 .nickname("test-user")
                 .password("abc123!!!")
                 .role(UserRole.USER)
+                .provider(AuthProvider.LOCAL)
                 .build();
         return user;
     }

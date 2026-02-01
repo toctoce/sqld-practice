@@ -1,11 +1,13 @@
 package toctoce.sqldpractice.controller;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
+import toctoce.sqldpractice.domain.user.AuthProvider;
 import toctoce.sqldpractice.domain.user.User;
 import toctoce.sqldpractice.domain.user.UserRepository;
 import toctoce.sqldpractice.domain.user.UserRole;
@@ -28,13 +31,19 @@ class UserControllerTest {
     @Autowired
     private UserRepository userRepository;
 
+    @BeforeEach
+    void setUp() {
+        userRepository.deleteAll();
+    }
+
     @Test
     @DisplayName("회원가입 성공 시 로그인 페이지로 리다이렉트된다.")
     void signup_success() throws Exception {
         mockMvc.perform(post("/signup")
                         .param("email", "newuser@gmail.com")
                         .param("password", "Password123!")
-                        .param("nickname", "영규"))
+                        .param("nickname", "영규")
+                        .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/login"));
     }
@@ -48,13 +57,15 @@ class UserControllerTest {
                 .password("password123!")
                 .nickname("기존유저")
                 .role(UserRole.USER)
+                .provider(AuthProvider.LOCAL)
                 .build());
 
         // When & Then: 동일한 이메일로 가입 시도
         mockMvc.perform(post("/signup")
                         .param("email", "duplicate@gmail.com")
                         .param("password", "Password123!")
-                        .param("nickname", "새유저"))
+                        .param("nickname", "새유저")
+                        .with(csrf()))
                 .andExpect(status().isConflict())
                 .andExpect(view().name("signup"))
                 .andExpect(model().attributeExists("errorMessage"));
@@ -66,7 +77,8 @@ class UserControllerTest {
         mockMvc.perform(post("/signup")
                         .param("email", "invalid-email")
                         .param("password", "Password123!")
-                        .param("nickname", "영규"))
+                        .param("nickname", "영규")
+                        .with(csrf()))
                 .andExpect(status().isBadRequest())
                 .andExpect(view().name("signup"))
                 .andExpect(model().attributeExists("errorMessage"));
@@ -78,7 +90,8 @@ class UserControllerTest {
         mockMvc.perform(post("/signup")
                         .param("email", "test@gmail.com")
                         .param("password", "short")
-                        .param("nickname", "영규"))
+                        .param("nickname", "영규")
+                        .with(csrf()))
                 .andExpect(status().isBadRequest())
                 .andExpect(view().name("signup"))
                 .andExpect(model().attributeExists("errorMessage"));
@@ -90,7 +103,8 @@ class UserControllerTest {
         mockMvc.perform(post("/signup")
                         .param("email", "test@gmail.com")
                         .param("password", "Password123!")
-                        .param("nickname", " "))
+                        .param("nickname", " ")
+                        .with(csrf()))
                 .andExpect(status().isBadRequest())
                 .andExpect(view().name("signup"))
                 .andExpect(model().attributeExists("errorMessage"));

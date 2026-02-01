@@ -37,11 +37,14 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false)
     private UserRole role;
 
-    private String provider;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private AuthProvider provider;
     private String providerId;
 
     @Builder
-    public User(String email, String password, String nickname, UserRole role, String provider, String providerId) {
+    public User(String email, String password, String nickname, UserRole role, AuthProvider provider,
+                String providerId) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
@@ -56,6 +59,7 @@ public class User extends BaseTimeEntity {
                 .password(encodedPassword)
                 .nickname(request.getNickname())
                 .role(UserRole.USER)
+                .provider(AuthProvider.LOCAL)
                 .build();
     }
 }
