@@ -62,4 +62,10 @@ public class User extends BaseTimeEntity {
                 .provider(AuthProvider.LOCAL)
                 .build();
     }
+
+    public User update(String nickname, String email) {
+        this.nickname = nickname;
+        this.email = email;
+        return this;
+    }
 }
