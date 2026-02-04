@@ -23,10 +23,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = super.loadUser(userRequest);
         OAuth2Attributes attributes = getOAuth2Attributes(userRequest, oAuth2User);
-        
-        saveOrUpdate(attributes);
 
-        return oAuth2User;
+        User user = saveOrUpdate(attributes);
+
+        return new PrincipalDetails(user, oAuth2User.getAttributes());
     }
 
     private static OAuth2Attributes getOAuth2Attributes(OAuth2UserRequest userRequest, OAuth2User oAuth2User) {
@@ -39,7 +39,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 oAuth2User.getAttributes());
     }
 
-    private void saveOrUpdate(OAuth2Attributes attributes) {
+    private User saveOrUpdate(OAuth2Attributes attributes) {
         AuthProvider provider = attributes.provider();
         String nickname = attributes.nickname();
         String email = attributes.email();
@@ -55,5 +55,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                         .build());
 
         userRepository.save(user);
+        return user;
     }
 }
