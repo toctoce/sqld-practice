@@ -14,9 +14,9 @@ public class PrincipalDetails implements OAuth2User {
     private final User user;
     private final Map<String, Object> attributes;
 
-    @Override
+    `@Override`
     public Map<String, Object> getAttributes() {
-        return attributes;
+        return Collections.unmodifiableMap(attributes);
     }
 
     @Override
