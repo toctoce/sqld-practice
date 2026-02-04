@@ -7,6 +7,7 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import toctoce.sqldpractice.domain.user.AuthProvider;
 import toctoce.sqldpractice.domain.user.Email;
 import toctoce.sqldpractice.domain.user.Nickname;
@@ -17,11 +18,13 @@ import toctoce.sqldpractice.domain.user.UserRole;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional(readOnly = true)
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private final UserRepository userRepository;
 
     @Override
+    @Transactional
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = super.loadUser(userRequest);
         OAuth2Attributes attributes = getOAuth2Attributes(userRequest, oAuth2User);
