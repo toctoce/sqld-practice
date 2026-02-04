@@ -42,7 +42,11 @@ public class User extends BaseTimeEntity {
     private String providerId;
 
     @Builder
-    public User(String email, String password, String nickname, UserRole role, AuthProvider provider,
+    public User(String email,
+                String password,
+                String nickname,
+                UserRole role,
+                AuthProvider provider,
                 String providerId) {
         this.email = email;
         this.password = password;

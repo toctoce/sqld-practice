@@ -1,6 +1,5 @@
 package toctoce.sqldpractice.global.security.oauth;
 
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -22,34 +21,36 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        // 유저 정보 로드
         OAuth2User oAuth2User = super.loadUser(userRequest);
-        // 속성 추출
-        Map<String, Object> attributes = oAuth2User.getAttributes();
-
-        // 유저 정보 확인
-        String registrationId = userRequest.getClientRegistration().getRegistrationId();
-        AuthProvider provider = AuthProvider.findByKey(registrationId);
-        String providerId = (String) attributes.get("sub");
-        String email = (String) attributes.get("email");
-        String name = (String) attributes.get("name");
-
-        log.info("registrationId={}, providerId={}, email={}, name={}",
-                registrationId, providerId, email, name);
-
-        saveOrUpdate(provider, providerId, email, name);
+        OAuth2Attributes attributes = getOAuth2Attributes(userRequest, oAuth2User);
+        
+        saveOrUpdate(attributes);
 
         return oAuth2User;
     }
 
-    private void saveOrUpdate(AuthProvider provider, String providerId, String nickname, String email) {
-        User user = userRepository.findByProviderAndProviderId(provider, providerId)
+    private static OAuth2Attributes getOAuth2Attributes(OAuth2UserRequest userRequest, OAuth2User oAuth2User) {
+        String registrationId = userRequest.getClientRegistration().getRegistrationId();
+        String userNameAttributeName = userRequest.getClientRegistration()
+                .getProviderDetails()
+                .getUserInfoEndpoint()
+                .getUserNameAttributeName();
+        return OAuth2Attributes.of(registrationId, userNameAttributeName,
+                oAuth2User.getAttributes());
+    }
+
+    private void saveOrUpdate(OAuth2Attributes attributes) {
+        AuthProvider provider = attributes.provider();
+        String nickname = attributes.nickname();
+        String email = attributes.email();
+
+        User user = userRepository.findByProviderAndProviderId(provider, attributes.providerId())
                 .map(u -> u.update(nickname, email))
                 .orElseGet(() -> User.builder()
                         .nickname(nickname)
                         .email(email)
                         .provider(provider)
-                        .providerId(providerId)
+                        .providerId(attributes.providerId())
                         .role(UserRole.USER)
                         .build());
 
