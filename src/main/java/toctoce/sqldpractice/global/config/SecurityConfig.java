@@ -21,10 +21,11 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/error", "/login", "/signup").permitAll() // 누구나 접근 가능
+                        .requestMatchers("/", "/error", "/login", "/signup", "/css/**", "/js/**")
+                        .permitAll() // 누구나 접근 가능
                         .anyRequest().authenticated() // 그 외 로그인 필수
                 )
                 .oauth2Login(oauth2 -> oauth2
