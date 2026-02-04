@@ -1,6 +1,7 @@
 package toctoce.sqldpractice.domain.user;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -12,7 +13,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import toctoce.sqldpractice.domain.user.dto.UserSignupRequest;
 import toctoce.sqldpractice.global.common.BaseTimeEntity;
 
 @Entity
@@ -27,10 +27,13 @@ public class User extends BaseTimeEntity {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String email;
-    private String password;
+    @Embedded
+    private Email email;
+    @Embedded
+    private Password password;
     @Column(nullable = false)
-    private String nickname;
+    @Embedded
+    private Nickname nickname;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -42,9 +45,9 @@ public class User extends BaseTimeEntity {
     private String providerId;
 
     @Builder
-    public User(String email,
-                String password,
-                String nickname,
+    public User(Email email,
+                Password password,
+                Nickname nickname,
                 UserRole role,
                 AuthProvider provider,
                 String providerId) {
@@ -56,17 +59,17 @@ public class User extends BaseTimeEntity {
         this.providerId = providerId;
     }
 
-    public static User of(UserSignupRequest request, String encodedPassword) {
+    public static User of(Email email, Nickname nickname, Password password) {
         return User.builder()
-                .email(request.getEmail())
-                .password(encodedPassword)
-                .nickname(request.getNickname())
+                .email(email)
+                .password(password)
+                .nickname(nickname)
                 .role(UserRole.USER)
                 .provider(AuthProvider.LOCAL)
                 .build();
     }
 
-    public User update(String nickname, String email) {
+    public User update(Nickname nickname, Email email) {
         this.nickname = nickname;
         this.email = email;
         return this;

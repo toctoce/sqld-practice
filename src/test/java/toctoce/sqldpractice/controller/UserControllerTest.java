@@ -13,9 +13,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 import toctoce.sqldpractice.domain.user.AuthProvider;
+import toctoce.sqldpractice.domain.user.Email;
+import toctoce.sqldpractice.domain.user.Nickname;
+import toctoce.sqldpractice.domain.user.Password;
 import toctoce.sqldpractice.domain.user.User;
 import toctoce.sqldpractice.domain.user.UserRepository;
 import toctoce.sqldpractice.domain.user.UserRole;
@@ -30,6 +34,9 @@ class UserControllerTest {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @BeforeEach
     void setUp() {
@@ -53,9 +60,9 @@ class UserControllerTest {
     void signup_fail_duplicate_email() throws Exception {
         // Given: 이미 존재하는 유저 저장
         userRepository.save(User.builder()
-                .email("duplicate@gmail.com")
-                .password("password123!")
-                .nickname("기존유저")
+                .email(Email.of("duplicate@gmail.com"))
+                .password(Password.encrypt("password123!", passwordEncoder))
+                .nickname(Nickname.of("기존유저"))
                 .role(UserRole.USER)
                 .provider(AuthProvider.LOCAL)
                 .build());

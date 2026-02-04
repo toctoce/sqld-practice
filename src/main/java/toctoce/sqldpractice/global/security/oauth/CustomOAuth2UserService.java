@@ -8,6 +8,8 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import toctoce.sqldpractice.domain.user.AuthProvider;
+import toctoce.sqldpractice.domain.user.Email;
+import toctoce.sqldpractice.domain.user.Nickname;
 import toctoce.sqldpractice.domain.user.User;
 import toctoce.sqldpractice.domain.user.UserRepository;
 import toctoce.sqldpractice.domain.user.UserRole;
@@ -41,8 +43,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private User saveOrUpdate(OAuth2Attributes attributes) {
         AuthProvider provider = attributes.provider();
-        String nickname = attributes.nickname();
-        String email = attributes.email();
+        Nickname nickname = Nickname.of(attributes.nickname().toString());
+        Email email = Email.of(attributes.email().toString());
 
         User user = userRepository.findByProviderAndProviderId(provider, attributes.providerId())
                 .map(u -> u.update(nickname, email))
