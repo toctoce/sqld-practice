@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import toctoce.sqldpractice.domain.user.AuthProvider;
 import toctoce.sqldpractice.domain.user.User;
 import toctoce.sqldpractice.domain.user.UserRepository;
+import toctoce.sqldpractice.domain.user.UserRole;
 
 @Service
 @RequiredArgsConstructor
@@ -41,7 +42,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         return oAuth2User;
     }
 
-    // todo : 유저의 패스워드가 not null이라서 생기는 에러 해결i
     private void saveOrUpdate(AuthProvider provider, String providerId, String nickname, String email) {
         User user = userRepository.findByProviderAndProviderId(provider, providerId)
                 .map(u -> u.update(nickname, email))
@@ -50,6 +50,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                         .email(email)
                         .provider(provider)
                         .providerId(providerId)
+                        .role(UserRole.USER)
                         .build());
 
         userRepository.save(user);
