@@ -44,3 +44,4 @@ desktop.ini
 ### Sensitive Data ###
 .env
 *.db
+src/main/resources/application-secret.properties

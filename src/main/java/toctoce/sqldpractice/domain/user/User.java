@@ -1,6 +1,7 @@
 package toctoce.sqldpractice.domain.user;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -8,16 +9,21 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import toctoce.sqldpractice.domain.user.dto.UserSignupRequest;
 import toctoce.sqldpractice.global.common.BaseTimeEntity;
 
 @Entity
 @Getter
-@Table(name = "USERS")
+@Table(name = "USERS", uniqueConstraints = {
+        @UniqueConstraint(
+                name = "uk_user_provider_provider_id",
+                columnNames = {"provider", "provider_id"}
+        )
+})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends BaseTimeEntity {
 
@@ -27,21 +33,30 @@ public class User extends BaseTimeEntity {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String email;
+    @Embedded
+    private Email email;
+    @Embedded
+    private Password password;
     @Column(nullable = false)
-    private String password;
-    @Column(nullable = false)
-    private String nickname;
+    @Embedded
+    private Nickname nickname;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserRole role;
 
-    private String provider;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private AuthProvider provider;
     private String providerId;
 
     @Builder
-    public User(String email, String password, String nickname, UserRole role, String provider, String providerId) {
+    public User(Email email,
+                Password password,
+                Nickname nickname,
+                UserRole role,
+                AuthProvider provider,
+                String providerId) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
@@ -50,12 +65,19 @@ public class User extends BaseTimeEntity {
         this.providerId = providerId;
     }
 
-    public static User of(UserSignupRequest request, String encodedPassword) {
+    public static User of(Email email, Nickname nickname, Password password) {
         return User.builder()
-                .email(request.getEmail())
-                .password(encodedPassword)
-                .nickname(request.getNickname())
+                .email(email)
+                .password(password)
+                .nickname(nickname)
                 .role(UserRole.USER)
+                .provider(AuthProvider.LOCAL)
                 .build();
+    }
+
+    public User update(Nickname nickname, Email email) {
+        this.nickname = nickname;
+        this.email = email;
+        return this;
     }
 }

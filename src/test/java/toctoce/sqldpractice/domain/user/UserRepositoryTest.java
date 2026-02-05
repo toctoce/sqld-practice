@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
@@ -15,6 +16,9 @@ class UserRepositoryTest {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @BeforeEach
     void setUp() {
@@ -36,20 +40,21 @@ class UserRepositoryTest {
         userRepository.save(user);
 
         // When
-        Optional<User> foundUser = userRepository.findByEmail("test@gmail.com");
+        Optional<User> foundUser = userRepository.findByEmail(Email.of("test@gmail.com"));
 
         // Then
         assertThat(foundUser).isPresent(); // Optional 검증
-        assertThat(foundUser.get().getEmail()).isEqualTo("test@gmail.com");
-        assertThat(foundUser.get().getNickname()).isEqualTo("test-user");
+        assertThat(foundUser.get().getEmail()).isEqualTo(Email.of("test@gmail.com"));
+        assertThat(foundUser.get().getNickname()).isEqualTo(Nickname.of("test-user"));
     }
 
-    private static User createTestUser() {
+    private User createTestUser() {
         User user = User.builder()
-                .email("test@gmail.com")
-                .nickname("test-user")
-                .password("abc123!!!")
+                .email(Email.of("test@gmail.com"))
+                .nickname(Nickname.of("test-user"))
+                .password(Password.encrypt("abc123!!!", passwordEncoder))
                 .role(UserRole.USER)
+                .provider(AuthProvider.LOCAL)
                 .build();
         return user;
     }

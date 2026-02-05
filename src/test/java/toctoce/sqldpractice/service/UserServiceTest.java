@@ -16,6 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import toctoce.sqldpractice.domain.user.Email;
 import toctoce.sqldpractice.domain.user.User;
 import toctoce.sqldpractice.domain.user.UserRepository;
 import toctoce.sqldpractice.domain.user.dto.UserSignupRequest;
@@ -38,7 +39,7 @@ class UserServiceTest {
     void signup_success() {
         // given
         UserSignupRequest request = new UserSignupRequest("new@test.com", "Password123!", "닉네임");
-        given(userRepository.findByEmail(anyString())).willReturn(Optional.empty());
+        given(userRepository.findByEmail(any(Email.class))).willReturn(Optional.empty());
         given(passwordEncoder.encode(anyString())).willReturn("encoded_password");
 
         // when
@@ -54,7 +55,7 @@ class UserServiceTest {
     void signup_fail_duplicate_email() {
         // given
         UserSignupRequest request = new UserSignupRequest("dup@test.com", "Password123!", "뉴비");
-        given(userRepository.findByEmail("dup@test.com")).willReturn(Optional.of(mock(User.class)));
+        given(userRepository.findByEmail(Email.of("dup@test.com"))).willReturn(Optional.of(mock(User.class)));
 
         // when & then
         assertThatThrownBy(() -> userService.signup(request))
