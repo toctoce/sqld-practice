@@ -39,7 +39,7 @@ class UserServiceTest {
     void signup_success() {
         // given
         UserSignupRequest request = new UserSignupRequest("new@test.com", "Password123!", "닉네임");
-        given(userRepository.findByEmail(any())).willReturn(Optional.empty());
+        given(userRepository.findByEmail(any(Email.class))).willReturn(Optional.empty());
         given(passwordEncoder.encode(anyString())).willReturn("encoded_password");
 
         // when
