@@ -13,7 +13,6 @@ import toctoce.sqldpractice.domain.user.Email;
 import toctoce.sqldpractice.domain.user.Nickname;
 import toctoce.sqldpractice.domain.user.User;
 import toctoce.sqldpractice.domain.user.UserRepository;
-import toctoce.sqldpractice.domain.user.UserRole;
 
 @Service
 @RequiredArgsConstructor
@@ -49,15 +48,14 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         Nickname nickname = attributes.nickname();
         Email email = attributes.email();
 
-        User user = userRepository.findByProviderAndProviderId(provider, attributes.providerId())
-                .map(u -> u.update(nickname, email))
-                .orElseGet(() -> User.builder()
-                        .nickname(nickname)
-                        .email(email)
-                        .provider(provider)
-                        .providerId(attributes.providerId())
-                        .role(UserRole.USER)
-                        .build());
+        User user = userRepository.findByEmail(attributes.email())
+                .map(u -> {
+                    if (!u.getProvider().equals(attributes.provider())) {
+                        throw new OAuth2AuthenticationException("이미 " + u.getProvider().name() + " 계정으로 가입된 이메일입니다.");
+                    }
+                    return u.update(nickname, email);
+                })
+                .orElseGet(attributes::toEntity);
 
         userRepository.save(user);
         return user;

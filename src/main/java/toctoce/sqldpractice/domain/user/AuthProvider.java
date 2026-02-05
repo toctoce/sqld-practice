@@ -7,11 +7,12 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum AuthProvider {
-    LOCAL("local"),
-    GOOGLE("google"),
-    KAKAO("kakao");
+    LOCAL("local", "일반"),
+    GOOGLE("google", "구글"),
+    KAKAO("kakao", "카카오");
 
     private final String key;
+    private final String description;
 
     public static AuthProvider findByKey(String registrationId) {
         return Arrays.stream(AuthProvider.values())
