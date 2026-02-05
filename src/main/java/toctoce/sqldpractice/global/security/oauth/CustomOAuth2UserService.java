@@ -46,8 +46,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private User saveOrUpdate(OAuth2Attributes attributes) {
         AuthProvider provider = attributes.provider();
-        Nickname nickname = Nickname.of(attributes.nickname().toString());
-        Email email = Email.of(attributes.email().toString());
+        Nickname nickname = attributes.nickname();
+        Email email = attributes.email();
 
         User user = userRepository.findByProviderAndProviderId(provider, attributes.providerId())
                 .map(u -> u.update(nickname, email))
