@@ -19,13 +19,14 @@ class EmailTest {
         assertThat(email.email()).isEqualTo(value);
     }
 
-    @ParameterizedTest
-    @NullAndEmptySource
-    @ValueSource(strings = {
+    `@ParameterizedTest`
+    `@NullAndEmptySource`
+    `@ValueSource`(strings = {
             "abc", "test@", "@google.com", "test@.com", " test@google.com",
-            "test..test@google.com", "test@test@google.com", "test@google", "test@."
+            "test@google.com ", "test ..test@google.com", ".test@google.com",
+            "test@test@google.com", "test@google", "test@google..com", "test@."
     })
-    @DisplayName("잘못된 이메일 형식은 InvalidInputException을 던진다.")
+    `@DisplayName`("잘못된 이메일 형식은 InvalidInputException을 던진다.")
     void invalid_email(String email) {
         assertThatThrownBy(() -> Email.of(email))
                 .isInstanceOf(InvalidInputException.class);
