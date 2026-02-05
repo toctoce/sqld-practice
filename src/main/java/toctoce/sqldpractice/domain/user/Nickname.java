@@ -9,7 +9,7 @@ public record Nickname(String nickname) {
 
     public static Nickname of(String value) {
         validate(value);
-        return new Nickname(value);
+        return new Nickname(value.trim());
     }
 
     public static void validate(String value) {
