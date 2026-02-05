@@ -24,9 +24,10 @@ public class UserService {
 
     @Transactional
     public void signup(UserSignupRequest request) {
-        validateDuplicateEmail(Email.of(request.email()));
+        Email email = Email.of(request.email());
+        validateDuplicateEmail(email);
         Password password = Password.encrypt(request.password(), passwordEncoder);
-        User user = User.of(Email.of(request.email()), Nickname.of(request.nickname()), password);
+        User user = User.of(email, Nickname.of(request.nickname()), password);
         userRepository.save(user);
     }
 
